@@ -5,11 +5,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from .fields import HexIntegerField
 from .settings import PUSH_NOTIFICATIONS_SETTINGS as SETTINGS
-
+from users.models import User
 
 CLOUD_MESSAGE_TYPES = (
 	("FCM", "Firebase Cloud Message"),
-	("GCM", "Google Cloud Message"),
+
 )
 
 
@@ -21,7 +21,7 @@ class Device(models.Model):
 		help_text=_("Inactive devices will not be sent notifications")
 	)
 	user = models.ForeignKey(
-		SETTINGS["USER_MODEL"], blank=True, null=True, on_delete=models.CASCADE
+		User, blank=True, null=True, on_delete=models.CASCADE
 	)
 	date_created = models.DateTimeField(
 		verbose_name=_("Creation date"), auto_now_add=True, null=True
@@ -87,7 +87,7 @@ class GCMDevice(Device):
 	registration_id = models.TextField(verbose_name=_("Registration ID"))
 	cloud_message_type = models.CharField(
 		verbose_name=_("Cloud Message Type"), max_length=3,
-		choices=CLOUD_MESSAGE_TYPES, default="GCM",
+		choices=CLOUD_MESSAGE_TYPES, default="FCM",
 		help_text=_("You should choose FCM or GCM")
 	)
 	objects = GCMDeviceManager()
